@@ -11,9 +11,8 @@ const blankProduct = {
 
 export const ProductModal = ({ open, onClose, onSave, product }) =>{
 
-    const [itemForm, setItemForm] = useState(blankProduct);
+  const [itemForm, setItemForm] = useState(blankProduct);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
  
 
   useEffect(() => {
@@ -23,7 +22,6 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
   }, [open, product]);
 
   const handleChange = ({ target: { value, name } }) => {
-    setError('');
     setItemForm({ ...itemForm, [name]: value });
   }
   const handleSave = async () => {
@@ -32,8 +30,7 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
       return setError('Please fill all data');
     }
     setError('');
-    setLoading(true);
-    try {
+    
       let docRef;
       if (product?.id) {
         // Update
@@ -49,12 +46,7 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
       });
       onSave();
       onClose();
-    } catch (e) {
-      const err = e;
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    
   }
 
     return (
@@ -96,7 +88,7 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
         {error && <Typography mb={1} align='center' color="red">{error}</Typography>}
         <Box display="flex" justifyContent="flex-end" gap={1}>
           <Button onClick={onClose} color="error" variant="outlined">Close</Button>
-          <Button disabled={loading} onClick={handleSave} variant="contained">Save</Button>
+          <Button onClick={handleSave} variant="contained">Save</Button>
         </Box>
       </Box>
     </Dialog>
