@@ -33,10 +33,7 @@ const router = createBrowserRouter([
  export const App = () =>{
   return (
     <>
-    
-      <CssBaseline />
       <RouterProvider router={router} />
-    
     </>
   );
   

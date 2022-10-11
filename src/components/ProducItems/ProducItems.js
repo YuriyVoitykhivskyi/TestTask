@@ -9,7 +9,6 @@ import { db } from '../../configFirebase';
 export const ProductItems = () =>{
 
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [productForEdit, setProductForEdit] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     
@@ -17,17 +16,12 @@ export const ProductItems = () =>{
   
      const loadProducts = useCallback(async () => {
       
-       const q = query(collection(db,  'products'));
-       setLoading(true);
-       try {
-         const data = await getDocs(q);
+       const productsRef = query(collection(db,  'products'));
+
+         const data = await getDocs(productsRef);
          setProducts(data.docs
            .map(doc => ({id: doc.id, ...doc.data()}))
          );
-       } finally {
-         setLoading(false);
-       }
-      
      }, []);
   
      useEffect(() => {
@@ -49,7 +43,8 @@ export const ProductItems = () =>{
 
       if (window.confirm("Are you sure u want to delete this product") == true) {
         await deleteDoc(doc(db,  'products', product.id));
-      setProducts(products.filter(p => p?.id !== product.id))
+        console.log(products);
+      setProducts(products.filter(currentV => currentV?.id !== product.id))
       } else {
         return;
       }
@@ -64,11 +59,11 @@ return (
       <Table>
         <TableHead>
           <TableRow>
-            {["Product name", "Qty", "Price", "Total", ''].map((label) => <TableCell key={label}>{label}</TableCell>)}
+            {["Product name", "Qty", "Price", "Total", 'Edit/Delete'].map((currentV) => <TableCell key={currentV}>{currentV}</TableCell>)}
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.length ? products.map((product, idx) => <TableRow key={idx}>
+          {products.length ?  products.map((product, idx) => <TableRow key={idx}>
             <TableCell>{product.name}</TableCell>
             <TableCell width={2}>{product.qty}</TableCell>
             <TableCell width={3}>${product.price.toFixed(2)}</TableCell>
@@ -82,12 +77,11 @@ return (
           </TableRow>)
             : <TableRow>
               <TableCell colSpan={5} align="center">
-                {loading ? <CircularProgress /> :
                   <Box display="flex" alignItems="center" flexDirection="column">
                     <Typography mb={1}>You have no items.</Typography>
                     <Button onClick={handleAddProduct} size="small" variant='outlined'><Add /> Add item</Button>
                   </Box>
-                }
+                
               </TableCell>
             </TableRow>
           }

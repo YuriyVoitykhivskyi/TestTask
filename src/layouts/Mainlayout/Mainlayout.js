@@ -13,9 +13,7 @@ return (
       <MainAppBar/>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <main id="main">
-          <Outlet />
-        </main>
+        <Outlet />
       </Box>
     </Box>
   );
