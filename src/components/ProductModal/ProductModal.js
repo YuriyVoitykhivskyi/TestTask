@@ -26,13 +26,13 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
   }
   const handleSave = async () => {
     const { name, price, qty } = itemForm;
-    if (![name, price, qty].every(el => Boolean(el))) {
+    if (![name, price, qty].every(currentV => Boolean(currentV))) {
       return setError('Please fill all data');
     }
     setError('');
     
       let docRef;
-      if (product?.id) {
+      if (product.id) {
         // Update
         docRef = doc(db,  'products', product.id);
       } else {
@@ -80,7 +80,7 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
               variant="standard" />
           </Box>
           <TextField
-            value={`$${(itemForm.qty * itemForm.price).toFixed(2)}`}
+            value={`${(itemForm.qty * itemForm.price).toFixed(2)}`}
             disabled
             label={"Total"}
             variant="standard" />

@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ProductModal } from '../ProductModal/ProductModal';
@@ -29,9 +29,7 @@ export const ProductItems = () =>{
      }, [loadProducts]);
   
     const handleEdit = (product) => {
-      if (!product.id) {
-        return;
-      }
+      
       setProductForEdit(product);
       setModalOpen(true);
     }
@@ -41,10 +39,10 @@ export const ProductItems = () =>{
     }
     const handleDelete = async (product) => {
 
-      if (window.confirm("Are you sure u want to delete this product") == true) {
+      if (window.confirm("Are you sure u want to delete this product") === true) {
         await deleteDoc(doc(db,  'products', product.id));
         console.log(products);
-      setProducts(products.filter(currentV => currentV?.id !== product.id))
+      setProducts(products.filter(currentV => currentV.id !== product.id))
       } else {
         return;
       }
@@ -89,7 +87,7 @@ return (
         <ProductModal 
           product={productForEdit} 
           open={modalOpen} 
-           onSave={() => loadProducts()} 
+          onSave={() => loadProducts()} 
           onClose={() => setModalOpen(false)} />
       </Table>
     </Box>
