@@ -32,7 +32,8 @@ export const ProductModal = ({ open, onClose, onSave, product }) =>{
     setError('');
     
       let docRef;
-      if (product.id) {
+      
+      if (product?.id) {
         // Update
         docRef = doc(db,  'products', product.id);
       } else {
