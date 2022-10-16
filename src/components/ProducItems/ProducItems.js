@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ProductModal } from '../ProductModal/ProductModal';
@@ -6,11 +6,18 @@ import { collection, deleteDoc, doc, getDocs, query } from 'firebase/firestore';
 import { db } from '../../configFirebase';
 
 
+
+
 export const ProductItems = () =>{
 
     const [products, setProducts] = useState([]);
     const [productForEdit, setProductForEdit] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [sortBy, setSortBy] = useState('');
+
+    const handleChangeSort = (event) => {
+      setSortBy(event.target.value);
+    };
     
     
   
@@ -41,7 +48,6 @@ export const ProductItems = () =>{
 
       if (window.confirm("Are you sure u want to delete this product") === true) {
         await deleteDoc(doc(db,  'products', product.id));
-        console.log(products);
       setProducts(products.filter(currentV => currentV.id !== product.id))
       } else {
         return;
@@ -51,13 +57,31 @@ export const ProductItems = () =>{
 
 return (
     <Box>
-      <Box display='flex' justifyContent="flex-end">
+      <Box display='flex' justifyContent="space-between">
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="sort-select">Sort Products</InputLabel>
+        <Select
+          labelId="sort-select"
+          id="sort-select"
+          value={sortBy}
+          onChange={handleChangeSort}
+          label='sort-by'
+          name='sort'
+        >
+          <MenuItem value="Alphabetical"> Alphabetical</MenuItem>
+          <MenuItem value='By count'>By count</MenuItem>
+          <MenuItem value='By price'>By price</MenuItem>
+          
+        </Select>
+      </FormControl>
+
         <Button onClick={handleAddProduct} variant='outlined'><Add /> Add item</Button>
       </Box>
+
       <Table>
         <TableHead>
           <TableRow>
-            {["Product name", "Qty", "Price", "Total", 'Edit/Delete'].map((currentV) => <TableCell key={currentV}>{currentV}</TableCell>)}
+            {["Product name",  "Qty", "Price", "Total", 'Edit/Delete'].map((currentV) => <TableCell key={currentV}>{currentV}</TableCell>)}
           </TableRow>
         </TableHead>
         <TableBody>
