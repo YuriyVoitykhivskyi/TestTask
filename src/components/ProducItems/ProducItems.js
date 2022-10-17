@@ -13,11 +13,38 @@ export const ProductItems = () =>{
     const [products, setProducts] = useState([]);
     const [productForEdit, setProductForEdit] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const [sortBy, setSortBy] = useState('');
+    const [sortBy, setSortBy] = useState('alphabet');
 
     const handleChangeSort = (event) => {
       setSortBy(event.target.value);
     };
+
+    useEffect(()=>{
+      if(sortBy === 'bycount'){
+        products.sort((a,b) => b.qty - a.qty);
+        console.log(products);
+       
+      }
+      if (sortBy === 'byprice'){
+        products.sort((a,b) => b.price - a.price);
+        console.log( products);
+      }
+      if(sortBy === 'alphabet'){
+        products.sort((a,b) =>{
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB){
+          return -1;
+        }
+        if(nameA > nameB){
+          return 1;
+        }
+        return 0;
+       
+        });
+      console.log(products);
+      }
+    },[sortBy])
     
     
   
@@ -45,7 +72,7 @@ export const ProductItems = () =>{
       setModalOpen(true);
     }
     const handleDelete = async (product) => {
-
+      
       if (window.confirm("Are you sure u want to delete this product") === true) {
         await deleteDoc(doc(db,  'products', product.id));
       setProducts(products.filter(currentV => currentV.id !== product.id))
@@ -56,6 +83,7 @@ export const ProductItems = () =>{
 
 
 return (
+  
     <Box>
       <Box display='flex' justifyContent="space-between">
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -68,9 +96,9 @@ return (
           label='sort-by'
           name='sort'
         >
-          <MenuItem value="Alphabetical"> Alphabetical</MenuItem>
-          <MenuItem value='By count'>By count</MenuItem>
-          <MenuItem value='By price'>By price</MenuItem>
+          <MenuItem value="alphabet"> Alphabet</MenuItem>
+          <MenuItem value='bycount'>By count</MenuItem>
+          <MenuItem value='byprice'>By price</MenuItem>
           
         </Select>
       </FormControl>
@@ -85,7 +113,7 @@ return (
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.length ?  products.map((product, idx) => <TableRow key={idx}>
+          {products.length ? products.map((product, idx) => <TableRow key={idx}>
             <TableCell>{product.name}</TableCell>
             <TableCell width={2}>{product.qty}</TableCell>
             <TableCell width={3}>${product.price.toFixed(2)}</TableCell>
